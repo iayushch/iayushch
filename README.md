@@ -22,7 +22,7 @@
 
 <br><br>
 
-<img src="assets/protocol.svg" width="100%" alt="Protocol: motivation starts it, discipline ships it. 865 LeetCode problems solved and a 365-day longest streak.">
+<img src="assets/protocol.svg" width="100%" alt="Protocol: motivation starts it, discipline ships it. 865 LeetCode problems solved: 286 easy, 504 medium, 75 hard.">
 
 <br><br>
 

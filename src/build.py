@@ -41,8 +41,8 @@ MINT_INK = '#06110B'
 W = 1000
 PAD = 56
 
-# LeetCode numbers read from leetcode.com/u/iayushch on 2026-10-03; the streak is his longest, not a live one.
-STATS = {'solved': 865, 'easy': 286, 'medium': 504, 'hard': 75, 'streak': 365, 'badges': 13}
+# LeetCode numbers read from leetcode.com/u/iayushch on 2026-10-03.
+STATS = {'solved': 865, 'easy': 286, 'medium': 504, 'hard': 75, 'badges': 13}
 
 ICONS = json.loads((ROOT / 'icons.json').read_text())
 ICONS['x'] = ('M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 '
@@ -383,7 +383,7 @@ def hero() -> str:
     # telemetry
     ty = 500
     body.append(f'<path d="M{PAD} {ty}H{W - PAD}" stroke="{BORDER}"/>' + sheen(PAD, W - PAD, ty, 9, 3, 200))
-    cells = [('865', '', 'PROBLEMS SOLVED'), ('365', 'd', 'LONGEST STREAK'),
+    cells = [(str(STATS['solved']), '', 'PROBLEMS SOLVED'), (str(STATS['badges']), '', 'LEETCODE BADGES'),
              ('04', '', 'PRODUCTS, END TO END'), ('24', 'h', 'REPLY TO EVERY BRIEF')]
     cw = (W - 2 * PAD) / 4
     for i, (num, unit, lab) in enumerate(cells):
@@ -395,7 +395,7 @@ def hero() -> str:
         body.append(f'<g{delay(6 + i, .08)}>{"".join(cell)}</g>')
 
     label = ('Ayush Kumar (@iayushch), Senior Software Developer in Bengaluru. I ship complete products, end to '
-             'end. Open to SDE 2 roles and freelance. 865 LeetCode problems solved, 365-day longest streak, '
+             'end. Open to SDE 2 roles and freelance. 865 LeetCode problems solved, 13 LeetCode badges, '
              '4 products owned end to end, replies within 24 hours.')
     return doc(W, H, label, ''.join(body), ''.join(defs))
 
@@ -576,7 +576,7 @@ def stack() -> str:
 # 04 — protocol
 # ---------------------------------------------------------------------------------------------------
 RULES = [
-    ('Show up every day.', 'A 365-day LeetCode streak. The habit compounds.'),
+    ('Put in the reps.', f'{STATS["solved"]} LeetCode problems solved, {STATS["hard"]} of them hard.'),
     ('Own it end to end.', 'Interface, API, data, deploy, monitoring. No handoffs.'),
     ('Measure, don’t guess.', 'If it isn’t on a dashboard, it isn’t done.'),
     ('Stay after v1.', 'I run what I build. Retainers welcome.'),
@@ -600,46 +600,40 @@ def protocol() -> str:
             r.append(f'<path d="M{PAD + 44} {y + 52}H500" stroke="{BORDER}"/>')
         body.append(f'<g{delay(i, .1, .1)}>{"".join(r)}</g>')
 
-    # streak card
-    x, y, cw, ch = 548, 168, W - PAD - 548, 350
-    card = [f'<rect x="{x}" y="{y}" width="{cw}" height="{ch}" rx="18" fill="{SURFACE}" stroke="{BORDER}"/>',
-            f'<path d="M{x + 24} {y + .5}h170" stroke="{MINT}" stroke-opacity=".8" stroke-width="1.5"/>',
-            text('LEETCODE  /  @IAYUSHCH', x + 26, y + 40, LABEL_SM, MUTED),
+    # LeetCode card: one dot per solved problem, easy to hard
+    x, y, cw = 548, 168, W - PAD - 548
+    card = [text('LEETCODE  /  @IAYUSHCH', x + 26, y + 40, LABEL_SM, MUTED),
             text(f'{STATS["badges"]} BADGES', x + cw - 26, y + 40, LABEL_SM, MINT, 'end')]
-    big, bw = runs([(str(STATS['streak']), Style('sans', 88, 500, -.03), TEXT)], x + 22, y + 130)
+    big, bw = runs([(str(STATS['solved']), Style('sans', 88, 500, -.03), TEXT)], x + 22, y + 130)
     card.append(big)
-    card.append(text('days', x + 22 + bw + 12, y + 130, Style('serif', 40), MINT))
-    card.append(text('LONGEST STREAK  ·  EVERY DAY, UNBROKEN', x + 26, y + 158, LABEL_SM, TEXT_2))
-    # 365 cells, one per day, week columns
-    cols, gx0, gy0 = 53, x + 26, y + 182
+    card.append(text('solved', x + 22 + bw + 12, y + 130, Style('serif', 40), MINT))
+    card.append(text('ONE DOT PER PROBLEM  ·  EASY TO HARD', x + 26, y + 158, LABEL_SM, TEXT_2))
+    tiers = [('easy', MINT, .32), ('medium', MINT, .78), ('hard', '#E6FFEE', 1)]
+    dots = [(c, o) for key, c, o in tiers for _ in range(STATS[key])]
+    rows, gx0, gy0 = 15, x + 26, y + 180
+    cols = math.ceil(len(dots) / rows)
     pitch = (cw - 52) / cols
-    size = pitch - 1.6
+    size = pitch - 1.5
     for c in range(cols):
-        cells = []
-        for rr in range(7):
-            if c * 7 + rr >= STATS['streak']:
-                break
-            cells.append(f'<rect x="{_n(gx0 + c * pitch)}" y="{_n(gy0 + rr * pitch)}" width="{_n(size)}" '
-                         f'height="{_n(size)}" rx="1.2"/>')
-        card.append(f'<g class="col" fill="{MINT}" style="animation-delay:{c * .045:.3f}s">{"".join(cells)}</g>')
-    # solved, by difficulty
-    sy = gy0 + 7 * pitch + 46
-    solved, sw = runs([(str(STATS['solved']), Style('sans', 30, 500, -.02), TEXT)], x + 26, sy)
-    card.append(solved)
-    card.append(text('PROBLEMS SOLVED', x + 26 + sw + 12, sy, LABEL_SM, MUTED))
-    bar_w, by = cw - 52, sy + 18
-    seg_x = x + 26
-    for key, colour in (('easy', MINT), ('medium', MINT_2), ('hard', '#2F8F55')):
-        w = bar_w * STATS[key] / STATS['solved'] - 3
-        card.append(f'<rect x="{_n(seg_x)}" y="{_n(by)}" width="{_n(w)}" height="8" rx="4" fill="{colour}"/>')
-        seg_x += w + 3
-    legend = f'{STATS["easy"]} EASY   ·   {STATS["medium"]} MEDIUM   ·   {STATS["hard"]} HARD'
-    card.append(text(legend, x + 26, by + 34, LABEL_SM, TEXT_2))
+        cells = [f'<rect x="{_n(gx0 + c * pitch)}" y="{_n(gy0 + r * pitch)}" width="{_n(size)}" height="{_n(size)}" '
+                 f'rx="1.1" fill="{colour}" fill-opacity="{op}"/>'
+                 for r, (colour, op) in enumerate(dots[c * rows:(c + 1) * rows])]
+        card.append(f'<g class="col" style="animation-delay:{c * .045:.3f}s">{"".join(cells)}</g>')
+    ly, lx = gy0 + rows * pitch + 34, x + 26
+    for key, colour, op in tiers:
+        label = f'{STATS[key]} {key.upper()}'
+        card.append(f'<rect x="{_n(lx)}" y="{_n(ly - 8.5)}" width="8" height="8" rx="1.5" fill="{colour}" '
+                    f'fill-opacity="{op}"/>')
+        card.append(text(label, lx + 16, ly, LABEL_SM, TEXT_2))
+        lx += 16 + measure(label, LABEL_SM) + 24
+    ch = ly + 32 - y
+    card[:0] = [f'<rect x="{x}" y="{y}" width="{cw}" height="{_n(ch)}" rx="18" fill="{SURFACE}" stroke="{BORDER}"/>',
+                f'<path d="M{x + 24} {y + .5}h170" stroke="{MINT}" stroke-opacity=".8" stroke-width="1.5"/>']
     body.append(f'<g class="fade" style="animation-delay:.3s">{"".join(card)}</g>')
-    label = ('Protocol: motivation starts it, discipline ships it. 01 Show up every day: a 365-day LeetCode streak. '
+    label = ('Protocol: motivation starts it, discipline ships it. 01 Put in the reps. '
              '02 Own it end to end: interface, API, data, deploy, monitoring. 03 Measure, don’t guess. 04 Stay '
              f'after v1: I run what I build. LeetCode: {STATS["solved"]} problems solved ({STATS["easy"]} easy, '
-             f'{STATS["medium"]} medium, {STATS["hard"]} hard), {STATS["badges"]} badges, 365-day longest streak.')
+             f'{STATS["medium"]} medium, {STATS["hard"]} hard), {STATS["badges"]} badges.')
     return doc(W, H, label, ''.join(body), ''.join(defs))
 
 
