@@ -1,7 +1,7 @@
 <div align="center">
 
 <a href="https://iayushch.com">
-  <img src="assets/hero.svg" width="100%" alt="Ayush Kumar (@iayushch), Senior Software Developer in Bengaluru. I ship complete products, end to end. Open to SDE 2 roles and freelance.">
+  <img src="assets/hero.svg" width="100%" alt="Ayush Kumar (@iayushch), Senior Software Developer in Bengaluru. I ship complete products, end to end. Have a project? Let’s talk.">
 </a>
 
 <br><br>

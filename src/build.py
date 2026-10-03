@@ -314,7 +314,7 @@ def hero() -> str:
     name_x = PAD + 50
     hud.append(text('AYUSH KUMAR', name_x, 53, LABEL, TEXT))
     hud.append(text('/  @IAYUSHCH', name_x + measure('AYUSH KUMAR', LABEL) + 14, 53, LABEL, MUTED))
-    pill = 'OPEN TO SDE 2 ROLES + FREELANCE'
+    pill = 'HAVE A PROJECT? LET’S TALK'
     pst = Style('mono', 11.5, 500, .12)
     pw = 44 + measure(pill, pst) + 18
     px = W - PAD - pw
@@ -395,7 +395,7 @@ def hero() -> str:
         body.append(f'<g{delay(6 + i, .08)}>{"".join(cell)}</g>')
 
     label = ('Ayush Kumar (@iayushch), Senior Software Developer in Bengaluru. I ship complete products, end to '
-             'end. Open to SDE 2 roles and freelance. 865 LeetCode problems solved, 13 LeetCode badges, '
+             'end. Have a project? Let’s talk. 865 LeetCode problems solved, 13 LeetCode badges, '
              '4 products owned end to end, replies within 24 hours.')
     return doc(W, H, label, ''.join(body), ''.join(defs))
 
